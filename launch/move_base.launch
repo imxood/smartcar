@@ -1,0 +1,19 @@
+<launch>
+	
+	<include file="$(find amcl)/examples/amcl_diff.launch" />
+
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find smartcar)/maps/blank_map_with_obstacle.yaml"/>
+
+	<include file="$(find smartcar)/launch/smartcar_display.rviz.launch" />
+
+	<node name="move_base" pkg="move_base" type="move_base" respawn="false" output="screen">
+		<rosparam file="$(find smartcar)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />  
+		<rosparam file="$(find smartcar)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />  
+		<rosparam file="$(find smartcar)/config/local_costmap_params.yaml" command="load" />  
+		<rosparam file="$(find smartcar)/config/global_costmap_params.yaml" command="load"/>  
+		<rosparam file="$(find smartcar)/config/base_local_planner_params.yaml" command="load" />
+	</node>
+
+	<node pkg="tf" type="static_transform_publisher" name="odom_map_broadcaster" args="0 0 0 0 0 0 /map /odom 100" />
+	
+</launch>
